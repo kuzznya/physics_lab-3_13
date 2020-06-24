@@ -1,17 +1,18 @@
 package com.kuzznya.lab.controller
 
 import com.kuzznya.lab.model.MagneticField
+import com.kuzznya.lab.model.TheoreticalMagneticField
 import com.kuzznya.lab.service.DataReader
 import com.kuzznya.lab.service.Router
 import javafx.collections.FXCollections
 import javafx.embed.swing.SwingFXUtils
+import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.SnapshotParameters
 import javafx.scene.chart.ScatterChart
 import javafx.scene.chart.XYChart
 import javafx.scene.chart.XYChart.Series
-import javafx.scene.control.Button
-import javafx.scene.control.TabPane
+import javafx.scene.control.*
 import javafx.scene.image.WritableImage
 import javafx.stage.FileChooser
 import java.io.File
@@ -28,14 +29,43 @@ class MainController {
     @FXML
     private lateinit var loadDataButton: Button
     @FXML
-    private lateinit var exportImageButton: Button
+    private lateinit var exportChartButton: Button
     @FXML
     private lateinit var chartPane: TabPane
+    @FXML
+    private lateinit var inputA: TextField
+    @FXML
+    private lateinit var inputI: TextField
+    @FXML
+    private lateinit var inputR: TextField
 
     private lateinit var field: MagneticField
 
+    private var a: Double = 0.0
+    private var I: Double = 0.0
+    private var R: Double = 0.0
+
+    private fun commitOrRevert(input: TextField, oldValue: Double) =
+        kotlin.runCatching {
+            input.text = input.text.toDouble().toString()
+            return@runCatching input.text.toDouble()
+        } .getOrElse {
+            input.text = oldValue.toString()
+            return@getOrElse oldValue
+        }
+
     @FXML
-    private fun initialize() {}
+    private fun initialize() {
+        inputA.setOnAction { event: ActionEvent -> a = commitOrRevert(event.source as TextField, a) }
+        inputI.setOnAction { event: ActionEvent -> I = commitOrRevert(event.source as TextField, I) }
+        inputR.setOnAction { event: ActionEvent -> R = commitOrRevert(event.source as TextField, R) }
+    }
+
+    private fun updateTheorParams() {
+        a = commitOrRevert(inputA, a)
+        I = commitOrRevert(inputI, I)
+        R = commitOrRevert(inputR, R)
+    }
 
     @FXML
     fun loadData() {
@@ -43,7 +73,7 @@ class MainController {
         Router.primaryStage.title = file.name
 
         loadDataButton.isDisable = true
-        exportImageButton.isDisable = true
+        exportChartButton.isDisable = true
 
         chartBZ.data.clear()
         chartGradBz.data.clear()
@@ -82,7 +112,51 @@ class MainController {
         )
 
         loadDataButton.isDisable = false
-        exportImageButton.isDisable = false
+        exportChartButton.isDisable = false
+    }
+
+    @FXML
+    fun plotTheorChart() {
+        if (!this::field.isInitialized) {
+            Alert(Alert.AlertType.ERROR, "No experimental points", ButtonType.OK).showAndWait()
+            return
+        }
+
+        updateTheorParams()
+
+        val theorField = TheoreticalMagneticField(a, I, R)
+
+        chartBZ.data.add(
+            Series("B(z) theor.",
+                FXCollections.observableList(
+                    theorField.getBValues(field.data.keys)
+                        .toList()
+                        .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+                )
+            )
+        )
+
+        theorField.getBValues(field.data.keys).forEach{ println(it) }
+
+//        chartGradBz.data.add(
+//            Series("grad Bz(z)",
+//                FXCollections.observableList(
+//                    field.gradBz
+//                        .toList()
+//                        .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+//                )
+//            )
+//        )
+//
+//        chartGradBxy.data.add(
+//            Series("grad Bxy(z)",
+//                FXCollections.observableList(
+//                    field.gradBxy
+//                        .toList()
+//                        .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+//                )
+//            )
+//        )
     }
 
     @FXML
