@@ -29,7 +29,7 @@ class MainController {
     @FXML
     private lateinit var loadDataButton: Button
     @FXML
-    private lateinit var exportChartButton: Button
+    private lateinit var exportImageButton: Button
     @FXML
     private lateinit var chartPane: TabPane
     @FXML
@@ -73,7 +73,7 @@ class MainController {
         Router.primaryStage.title = file.name
 
         loadDataButton.isDisable = true
-        exportChartButton.isDisable = true
+        exportImageButton.isDisable = true
 
         chartBZ.data.clear()
         chartGradBz.data.clear()
@@ -112,7 +112,7 @@ class MainController {
         )
 
         loadDataButton.isDisable = false
-        exportChartButton.isDisable = false
+        exportImageButton.isDisable = false
     }
 
     @FXML
