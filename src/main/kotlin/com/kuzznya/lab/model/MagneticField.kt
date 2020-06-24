@@ -8,7 +8,8 @@ class MagneticField (
     val data: Map<Point, Vector>
 ) {
     val values: Map<Point, Double>
-        get() = data.keys.associateWith { sqrt(data[it]!!.x.pow(2) + data[it]!!.y.pow(2) + data[it]!!.z.pow(2)) }
+        get() = data.keys
+            .associateWith { sqrt(data[it]!!.x.pow(2) + data[it]!!.y.pow(2) + data[it]!!.z.pow(2)) }
 
     val gradBz: Map<Point, Double>
         get() = data

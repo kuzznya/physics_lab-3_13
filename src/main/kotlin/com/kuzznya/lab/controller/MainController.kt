@@ -4,15 +4,18 @@ import com.kuzznya.lab.model.MagneticField
 import com.kuzznya.lab.service.DataReader
 import com.kuzznya.lab.service.Router
 import javafx.collections.FXCollections
+import javafx.embed.swing.SwingFXUtils
 import javafx.fxml.FXML
-import javafx.scene.chart.NumberAxis
+import javafx.scene.SnapshotParameters
 import javafx.scene.chart.ScatterChart
 import javafx.scene.chart.XYChart
 import javafx.scene.chart.XYChart.Series
 import javafx.scene.control.Button
+import javafx.scene.control.TabPane
+import javafx.scene.image.WritableImage
 import javafx.stage.FileChooser
 import java.io.File
-import kotlin.math.ceil
+import javax.imageio.ImageIO
 
 class MainController {
 
@@ -46,32 +49,35 @@ class MainController {
 
         field = MagneticField(DataReader(file.absolutePath).loadData())
 
-        val seriesBz: Series<Number, Number> = Series()
-        seriesBz.data = FXCollections.observableList(
-            field.values
-                .toList()
-                .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+        chartBZ.data.add(
+            Series("B(z)",
+                FXCollections.observableList(
+                    field.values
+                        .toList()
+                        .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+                )
+            )
         )
-        seriesBz.name = "B(z)"
-        chartBZ.data.add(seriesBz)
 
-        val seriesGradBz: Series<Number, Number> = Series()
-        seriesGradBz.data = FXCollections.observableList(
-            field.gradBz
-                .toList()
-                .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+        chartGradBz.data.add(
+            Series("grad Bz(z)",
+                FXCollections.observableList(
+                    field.gradBz
+                        .toList()
+                        .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+                )
+            )
         )
-        seriesGradBz.name = "grad Bz(z)"
-        chartGradBz.data.add(seriesGradBz)
 
-        val seriesGradBxy: Series<Number, Number> = Series()
-        seriesGradBxy.data = FXCollections.observableList(
-            field.gradBxy
-                .toList()
-                .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+        chartGradBxy.data.add(
+            Series("grad Bxy(z)",
+                FXCollections.observableList(
+                    field.gradBxy
+                        .toList()
+                        .map { XYChart.Data<Number, Number>(it.first.z, it.second) }
+                )
+            )
         )
-        seriesGradBxy.name = "grad Bxy(z)"
-        chartGradBxy.data.add(seriesGradBxy)
 
         loadDataButton.isDisable = false
         exportImageButton.isDisable = false
