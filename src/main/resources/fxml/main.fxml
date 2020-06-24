@@ -13,7 +13,7 @@
         <Button fx:id="loadDataButton" mnemonicParsing="false" onAction="#loadData" text="Load data" />
         <Button fx:id="exportImageButton" disable="true" mnemonicParsing="false" onAction="#exportImage" text="Export image" />
     </HBox>
-    <TabPane layoutX="20.0" layoutY="20.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="20.0"
+    <TabPane fx:id="chartPane" layoutX="20.0" layoutY="20.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="20.0"
              AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
         <Tab closable="false" text="B(z)">
             <ScatterChart fx:id="chartBZ" prefHeight="400.0" prefWidth="585.0">

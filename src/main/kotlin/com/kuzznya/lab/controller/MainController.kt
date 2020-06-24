@@ -29,6 +29,8 @@ class MainController {
     private lateinit var loadDataButton: Button
     @FXML
     private lateinit var exportImageButton: Button
+    @FXML
+    private lateinit var chartPane: TabPane
 
     private lateinit var field: MagneticField
 
@@ -85,7 +87,24 @@ class MainController {
 
     @FXML
     fun exportImage() {
+        val chooser = FileChooser()
+        chooser.extensionFilters.add(FileChooser.ExtensionFilter(
+            "image files (*.png)", "*.png"
+        ))
 
+        var file = chooser.showSaveDialog(Router.primaryStage) ?: return
+
+        if (!file.name.toUpperCase().endsWith(".PNG"))
+            file = File(file.absolutePath + ".png")
+
+        val params = SnapshotParameters()
+        val image: WritableImage = when {
+            chartPane.tabs[0].isSelected -> chartBZ.snapshot(params, null)
+            chartPane.tabs[1].isSelected -> chartGradBz.snapshot(params, null)
+            else -> chartGradBxy.snapshot(params, null)
+        }
+
+        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file)
     }
 
 }
