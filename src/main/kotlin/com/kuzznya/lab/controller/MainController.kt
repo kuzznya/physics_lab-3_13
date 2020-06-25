@@ -59,6 +59,7 @@ class MainController {
         inputA.setOnAction { event: ActionEvent -> a = commitOrRevert(event.source as TextField, a) }
         inputI.setOnAction { event: ActionEvent -> I = commitOrRevert(event.source as TextField, I) }
         inputR.setOnAction { event: ActionEvent -> R = commitOrRevert(event.source as TextField, R) }
+        updateTheorParams()
     }
 
     private fun updateTheorParams() {
@@ -135,8 +136,6 @@ class MainController {
                 )
             )
         )
-
-        theorField.getBValues(field.data.keys).forEach{ println(it) }
     }
 
     @FXML
