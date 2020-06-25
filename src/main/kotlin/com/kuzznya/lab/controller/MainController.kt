@@ -29,6 +29,8 @@ class MainController {
     @FXML
     private lateinit var loadDataButton: Button
     @FXML
+    private lateinit var uniformityDZButton: Button
+    @FXML
     private lateinit var exportImageButton: Button
     @FXML
     private lateinit var chartPane: TabPane
@@ -74,6 +76,7 @@ class MainController {
         Router.primaryStage.title = file.name
 
         loadDataButton.isDisable = true
+        uniformityDZButton.isDisable = true
         exportImageButton.isDisable = true
 
         chartBZ.data.clear()
@@ -113,6 +116,7 @@ class MainController {
         )
 
         loadDataButton.isDisable = false
+        uniformityDZButton.isDisable = false
         exportImageButton.isDisable = false
     }
 
@@ -136,6 +140,15 @@ class MainController {
                 )
             )
         )
+    }
+
+    @FXML
+    fun showUniformityDeltaZ() {
+        Alert(Alert.AlertType.INFORMATION,
+            List(10) {index ->
+                "${index + 1}% \t Δz = ${field.deltaZUniform((index + 1) / 100.0)}" }
+                .joinToString(separator = "\n"),
+            ButtonType.CLOSE).show()
     }
 
     @FXML
